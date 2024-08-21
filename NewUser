@@ -1,0 +1,12 @@
+$firstName = Read-Host 'Please enter first name'
+$lastName = Read-Host 'Please enter last name'
+$password = Read-Host 'Please enter Password'
+$name = $firstName + "." + $lastName 
+$displayName = $firstName + " " + $lastName
+$email = $name + "@t-mhs.com"
+
+Write-Output $email
+
+New-ADUser -name $name -AccountPassword (Read-Host -AsSecureString $password) -Enabled $true -ChangePasswrodAtLogon $false  -EmailAddress $email -Organization  "TMH 365 Users" -Whatif
+
+Add-ADGroupMemeber -Identity everybody -Members $displayName
