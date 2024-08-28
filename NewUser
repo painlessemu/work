@@ -6,8 +6,6 @@ $name = $firstName + "." + $lastName
 $displayName = $firstName + " " + $lastName
 $email = $name + $domain
 
-#Write-Output $email
-
 New-ADUser -Name $displayName -UserPrincipalName $email -GivenName $firstName -Surname $lastName -SamAccountName $displayName -DisplayName $displayName -AccountPassword (ConvertTo-SecureString $password -AsPlainText -Force) -Enabled $true -EmailAddress $email -Path "OU=Users,OU=IT,OU=Department,dc=jmatyka,dc=com"#-WhatIf
 
-#Add-ADGroupMemeber -Identity everybody -Members $displayName
+Add-ADGroupMember -Identity everybody -Members $displayName
