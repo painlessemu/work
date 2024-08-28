@@ -1,11 +1,19 @@
-$firstName = Read-Host 'Please enter first name'
-$lastName = Read-Host 'Please enter last name'
-$password = Read-Host 'Please enter Password'
-$domain = "@t-mhs.com"
-$name = $firstName + "." + $lastName 
-$displayName = $firstName + " " + $lastName
-$email = $name + $domain
+$continue = $true
+while($continue){
+    $firstName = Read-Host 'Please enter first name'
+    $lastName = Read-Host 'Please enter last name'
+    $password = Read-Host 'Please enter Password'
+    $domain = "@t-mhs.com"
+    $name = $firstName + "." + $lastName 
+    $displayName = $firstName + " " + $lastName
+    $email = $name + $domain
+    New-ADUser -Name $displayName -UserPrincipalName $email -GivenName $firstName -Surname $lastName -SamAccountName $displayName -DisplayName $displayName -AccountPassword (ConvertTo-SecureString $password -AsPlainText -Force) -Enabled $true -EmailAddress $email -Path "OU=Users,OU=IT,OU=Department,dc=jmatyka,dc=com"#-WhatIf
 
-New-ADUser -Name $displayName -UserPrincipalName $email -GivenName $firstName -Surname $lastName -SamAccountName $displayName -DisplayName $displayName -AccountPassword (ConvertTo-SecureString $password -AsPlainText -Force) -Enabled $true -EmailAddress $email -Path "OU=Users,OU=IT,OU=Department,dc=jmatyka,dc=com"#-WhatIf
-
-Add-ADGroupMember -Identity everybody -Members $displayName
+    Add-ADGroupMember -Identity everybody -Members $displayName
+    $more = Read-Host 'press 1 to add another user, press 2 to quit'
+    if ($more -eq "1"){
+        continue}
+    elseif ($more -eq "2"){
+        $continue = $false
+        }
+        }
