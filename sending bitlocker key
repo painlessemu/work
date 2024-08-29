@@ -1,0 +1,20 @@
+$string = manage-bde -protectors -get c:
+
+# Sample string containing GUID
+$string = "Here is a GUID: {529B7A5C-4FE6-467C-8173-8E3991D6B75A} and another one: {12345678-1234-1234-1234-1234567890AB}"
+
+# Regex pattern to match GUIDs
+$pattern = "\{[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}\}"
+
+# Find matches
+if ($string -match $pattern) {
+    $matches = [regex]::Matches($string, $pattern)
+    foreach ($match in $matches) {
+        Write-Output "Found GUID: $($match.Value)"
+        $secondMatch = $match[1].Value
+    }
+} else {
+    Write-Output "No GUID found."
+}
+Write-Host $match
+manage-bde -protectors -adbackup c: -id $match
