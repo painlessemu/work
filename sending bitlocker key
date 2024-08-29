@@ -1,5 +1,3 @@
-$string = manage-bde -protectors -get c:
-
 # Backup Bitlocker Recovery Key to AD or AAD depending on if system is Azure / AD joined. 
 $volume = Get-BitLockerVolume -MountPoint "C:"
 $keyProtector = $volume.KeyProtector | Where-Object { $_.KeyProtectorType -eq 'RecoveryPassword' }
