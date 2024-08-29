@@ -1,0 +1,33 @@
+# Enable Bitlocker on C: Drive 
+Enable-BitLocker -MountPoint "C:" -EncryptionMethod XtsAes128 -UsedSpaceOnly -SkipHardwareTest -RecoveryPasswordProtector 
+
+# Backup Bitlocker Recovery Key to AD or AAD depending on if system is Azure / AD joined. 
+$volume = Get-BitLockerVolume -MountPoint "C:"
+$keyProtector = $volume.KeyProtector | Where-Object { $_.KeyProtectorType -eq 'RecoveryPassword' }
+
+# Extract the KeyProtectorId for backup purposes
+$keyProtectorId = $keyProtector.KeyProtectorId
+
+if (!$keyProtectorId) {
+    Write-Host "Failed to retrieve the KeyProtectorId."
+    exit
+}
+
+# Check to see if the system is domain joined - If AD (Active Directory) joined, backs up to AD otherwise backs up Recovery key to AAD (Azure AD).
+if ((Get-WmiObject -Class Win32_ComputerSystem).PartOfDomain -eq $true) {
+    # Backup to Active Directory
+    Manage-BDE -Protectors -ADBackup "C:" -ID $keyProtectorId
+    if ($?) {
+        Write-Host "Recovery key successfully backed up to Active Directory."
+    } else {
+        Write-Host "Failed to backup the recovery key to Active Directory."
+    }
+} else {
+    # Backup to Azure Active Directory (AAD)
+    Manage-BDE -Protectors -AADBackup "C:" -ID $keyProtectorId
+    if ($?) {
+        Write-Host "Recovery key successfully backed up to Azure Active Directory."
+    } else {
+        Write-Host "Failed to backup the recovery key to Azure Active Directory."
+    }
+}
