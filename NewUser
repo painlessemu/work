@@ -1,8 +1,6 @@
 $continue = $true
 while($continue){
     
-
-    Add-ADGroupMember -Identity everybody -Members $displayName
     $more = Read-Host 'press 1 to add user, press 2 to quit'
     if ($more -eq "1"){
         $firstName = Read-Host 'Please enter first name'
@@ -13,6 +11,7 @@ while($continue){
     $displayName = $firstName + " " + $lastName
     $email = $name + $domain
     New-ADUser -Name $displayName -UserPrincipalName $email -GivenName $firstName -Surname $lastName -SamAccountName $displayName -DisplayName $displayName -AccountPassword (ConvertTo-SecureString $password -AsPlainText -Force) -Enabled $true -EmailAddress $email -Path "OU=Users,OU=IT,OU=Department,dc=jmatyka,dc=com"}#-WhatIf
+    Add-ADGroupMember -Identity everybody -Members $displayName
     elseif ($more -eq "2"){
         $continue = $false
         }
